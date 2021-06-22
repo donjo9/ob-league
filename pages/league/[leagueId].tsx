@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
@@ -15,32 +15,29 @@ const Content = styled.main`
   ${tw`m-2 p-8`}
 `;
 
-const Header = styled.h1`
-  ${tw`font-bold text-6xl`}
-`;
-
-const StyledLink = styled.a`
-  ${tw`text-xl`}
-`;
-
 export default function Home() {
-  const [teams, setTeams] = useState<Array<any>>([]);
+  const router = useRouter();
+  const { leagueId } = router.query;
+  const [league, setLeague] = useState<any>({
+    id: "",
+    name: "",
+    players: [],
+  });
   useEffect(() => {
     const test = async () => {
-      const f = await fetch("http://localhost:3000/api/league");
+      const f = await fetch(`http://localhost:3000/api/league/${leagueId}`);
       const t = await f.json();
-      setTeams(t);
+      console.log(t);
+      setLeague(t);
     };
-    test();
-  }, []);
+    if (leagueId) {
+      test();
+    }
+  }, [leagueId]);
 
-  const t = teams.map((p) => (
+  const t = league.map((p: any) => (
     <tr key={p.id}>
-      <td>
-        <Link href={`/league/${p.id}`}>
-          <a>{p.name}</a>
-        </Link>
-      </td>
+      <td>{p.name}</td>
     </tr>
   ));
   return (
@@ -53,7 +50,7 @@ export default function Home() {
         <table>
           <thead>
             <tr>
-              <th>Leagues</th>
+              <th>{league.name}</th>
             </tr>
           </thead>
           <tbody>{t}</tbody>
