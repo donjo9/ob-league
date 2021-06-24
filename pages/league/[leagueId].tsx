@@ -1,3 +1,4 @@
+import * as React from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -18,6 +19,10 @@ const Content = styled.main`
 type TeamType = {
   name: string;
   id: string;
+  win: number;
+  loss: number;
+  roundsWon: number;
+  roundsLost: number;
 };
 type groupType = {
   id: string;
@@ -49,20 +54,33 @@ export default function Home() {
   }, [leagueId]);
 
   const groups = league.groups.map((p: groupType, i: number) => (
-    <table key={p.id}>
-      <thead>
-        <tr>
-          <th>Group {i + 1}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {p?.teams.map((t) => (
-          <tr key={t.id}>
-            <td>{t.name}</td>
+    <React.Fragment key={p.id}>
+      <h1>Group {i + 1}</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th>Wins</th>
+            <th>Loss</th>
+            <th>Rounds Won</th>
+            <th>Rounds Lost</th>
+            <th>Round Difference</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {p?.teams.map((t) => (
+            <tr key={t.id}>
+              <td>{t.name}</td>
+              <td>{t.win}</td>
+              <td>{t.loss}</td>
+              <td>{t.roundsWon}</td>
+              <td>{t.roundsLost}</td>
+              <td>{t.roundsWon - t.roundsLost}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </React.Fragment>
   ));
   return (
     <Container>

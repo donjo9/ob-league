@@ -28,12 +28,43 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
             q.Var("groups"),
             q.Lambda("groupRef", {
               id: q.Select(["ref", "id"], q.Var("groupRef")),
-              teams: q.Map(
-                q.Select(["data", "teams"], q.Var("groupRef")),
-                q.Lambda("teamRef", {
-                  name: q.Select(["data", "name"], q.Get(q.Var("teamRef"))),
-                  id: q.Select(["ref", "id"], q.Get(q.Var("teamRef"))),
-                })
+              teams: q.Select(
+                ["data"],
+                q.Map(
+                  q.Paginate(
+                    q.Match(
+                      q.Index("allTeamsStatsByGroups"),
+                      q.Select(["ref"], q.Var("groupRef"))
+                    )
+                  ),
+                  q.Lambda(
+                    "teamStatRef",
+                    q.Let(
+                      {
+                        tsRef: q.Get(q.Var("teamStatRef")),
+                        team: q.Get(
+                          q.Select(["data", "teamRef"], q.Var("tsRef"))
+                        ),
+                      },
+                      {
+                        name: q.Select(["data", "name"], q.Var("team")),
+                        id: q.Select(["ref", "id"], q.Var("team")),
+                        win: q.Select(["data", "win"], q.Var("tsRef"), 0),
+                        loss: q.Select(["data", "loss"], q.Var("tsRef"), 0),
+                        roundsWon: q.Select(
+                          ["data", "roundsWon"],
+                          q.Var("tsRef"),
+                          0
+                        ),
+                        roundsLost: q.Select(
+                          ["data", "roundsLost"],
+                          q.Var("tsRef"),
+                          0
+                        ),
+                      }
+                    )
+                  )
+                )
               ),
             })
           )
@@ -41,7 +72,7 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     )
   );
-  console.log(data);
+  console.log(data.groups);
 
   return res.status(200).json(data);
 };
