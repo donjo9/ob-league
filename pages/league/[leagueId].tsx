@@ -15,13 +15,26 @@ const Content = styled.main`
   ${tw`m-2 p-8`}
 `;
 
+type TeamType = {
+  name: string;
+  id: string;
+};
+type groupType = {
+  id: string;
+  teams: Array<TeamType>;
+};
+
+type leagueType = {
+  name: string;
+  groups: Array<groupType>;
+};
+
 export default function Home() {
   const router = useRouter();
   const { leagueId } = router.query;
-  const [league, setLeague] = useState<any>({
-    id: "",
+  const [league, setLeague] = useState<leagueType>({
     name: "",
-    players: [],
+    groups: [],
   });
   useEffect(() => {
     const test = async () => {
@@ -35,27 +48,29 @@ export default function Home() {
     }
   }, [leagueId]);
 
-  const t = league.map((p: any) => (
-    <tr key={p.id}>
-      <td>{p.name}</td>
-    </tr>
+  const groups = league.groups.map((p: groupType, i: number) => (
+    <table key={p.id}>
+      <thead>
+        <tr>
+          <th>Group {i + 1}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {p?.teams.map((t) => (
+          <tr key={t.id}>
+            <td>{t.name}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   ));
   return (
     <Container>
       <Head>
-        <title>Oldboys league</title>
+        <title>{league.name}</title>
       </Head>
 
-      <Content>
-        <table>
-          <thead>
-            <tr>
-              <th>{league.name}</th>
-            </tr>
-          </thead>
-          <tbody>{t}</tbody>
-        </table>
-      </Content>
+      <Content>{groups}</Content>
     </Container>
   );
 }
