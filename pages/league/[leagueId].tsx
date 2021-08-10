@@ -16,6 +16,13 @@ const Content = styled.main`
   ${tw`m-2 p-8`}
 `;
 
+const GroupTable = styled.table`
+  ${tw`bg-gray-700 p-2 w-3/5 table-auto  text-center`}
+`;
+
+const GroupHead = styled.thead`
+  ${tw`bg-gray-900 m-2`}
+`;
 type TeamType = {
   name: string;
   id: string;
@@ -56,8 +63,8 @@ export default function Home() {
   const groups = league.groups.map((p: groupType, i: number) => (
     <React.Fragment key={p.id}>
       <h1>Group {i + 1}</h1>
-      <table>
-        <thead>
+      <GroupTable>
+        <GroupHead>
           <tr>
             <th>Team</th>
             <th>Wins</th>
@@ -66,7 +73,7 @@ export default function Home() {
             <th>Rounds Lost</th>
             <th>Round Difference</th>
           </tr>
-        </thead>
+        </GroupHead>
         <tbody>
           {p?.teams.map((t) => (
             <tr key={t.id}>
@@ -79,7 +86,7 @@ export default function Home() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </GroupTable>
     </React.Fragment>
   ));
   return (
