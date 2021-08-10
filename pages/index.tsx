@@ -27,7 +27,7 @@ export default function Home() {
   const [teams, setTeams] = useState<Array<any>>([]);
   useEffect(() => {
     const test = async () => {
-      const f = await fetch("http://localhost:3000/api/league");
+      const f = await fetch("/api/league");
       const t = await f.json();
       setTeams(t);
     };

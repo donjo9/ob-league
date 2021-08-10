@@ -50,7 +50,7 @@ export default function Home() {
   });
   useEffect(() => {
     const test = async () => {
-      const f = await fetch(`http://localhost:3000/api/league/${leagueId}`);
+      const f = await fetch(`/api/league/${leagueId}`);
       const t = await f.json();
       console.log(t);
       setLeague(t);

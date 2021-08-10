@@ -44,7 +44,7 @@ export default function Home() {
   });
   useEffect(() => {
     const test = async () => {
-      const f = await fetch(`http://localhost:3000/api/team/${teamId}`);
+      const f = await fetch(`/api/team/${teamId}`);
       const t = await f.json();
       console.log(t);
       setTeam(t);
