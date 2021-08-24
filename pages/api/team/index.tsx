@@ -1,13 +1,22 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import faunadb, { Collection, Ref } from "faunadb";
+import faunadb from "faunadb";
 
 const secret = process.env.FAUNADB_SECRET || "";
 
 const q = faunadb.query;
 const client = new faunadb.Client({ secret });
 
-const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {};
+const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+  console.log("req.body: ", req.body);
+
+  const { id, name } = req.body;
+  console.log("id: ", id, "name: ", name);
+  const r = await client.query<any>(
+    q.Create(q.Ref(q.Collection("teams"), id), { data: { name } })
+  );
+  return res.status(200).json(r);
+};
 
 const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { data } = await client.query<any>(
@@ -27,8 +36,6 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       )
     )
   );
-
-  console.log(data);
   res.status(200).json(data);
 };
 
@@ -38,14 +45,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     switch (req.method) {
       case "POST":
-        postHandler(req, res);
-        break;
+        return postHandler(req, res);
       case "GET":
-        getHandler(req, res);
-        break;
+        return getHandler(req, res);
       case "PUT":
-        putHandler(req, res);
-        break;
+        return putHandler(req, res);
       default:
         break;
     }
