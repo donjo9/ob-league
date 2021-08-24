@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
+import { useLeague } from "../../../hooks/UseLeague";
 
 const Container = styled.div`
   ${tw`bg-gray-800 text-blue-100`}
@@ -44,23 +45,9 @@ type leagueType = {
 export default function Home() {
   const router = useRouter();
   const { leagueId } = router.query;
-  const [league, setLeague] = useState<leagueType>({
-    name: "",
-    groups: [],
-  });
-  useEffect(() => {
-    const test = async () => {
-      const f = await fetch(`/api/league/${leagueId}`);
-      const t = await f.json();
-      console.log(t);
-      setLeague(t);
-    };
-    if (leagueId) {
-      test();
-    }
-  }, [leagueId]);
+  const { isLoading, isError, data } = useLeague(leagueId);
 
-  const groups = league.groups.map((p: groupType, i: number) => (
+  const groups = data?.groups.map((p: groupType, i: number) => (
     <React.Fragment key={p.id}>
       <h1>Group {i + 1}</h1>
       <GroupTable>
@@ -92,10 +79,13 @@ export default function Home() {
   return (
     <Container>
       <Head>
-        <title>{league.name}</title>
+        <title>{data?.name}</title>
       </Head>
 
-      <Content>{groups}</Content>
+      <Content>
+        {isLoading && <span>Loading...</span>}
+        {groups}
+      </Content>
     </Container>
   );
 }
