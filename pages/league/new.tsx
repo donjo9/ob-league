@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useQuery, useMutation } from "react-query";
 import tw from "twin.macro";
 import { useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
 
 const Container = styled.div`
   ${tw`flex flex-row bg-gray-700 items-start`}
@@ -29,7 +30,7 @@ type TeamType = {
 };
 
 const AddTeam = styled.input`
-  ${tw`p-2 bg-gray-600 border-2 border-gray-800 rounded`}
+  ${tw`p-2 bg-gray-600 border-2 border-gray-800 rounded text-white`}
 `;
 const AddTeamButton = styled.input`
   ${tw`rounded border-2 bg-green-600 text-white my-2 p-2 border-green-700`}
@@ -39,9 +40,27 @@ const AddTeamForm = styled.form`
 `;
 
 const NewLeague = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register: registerTeam,
+    handleSubmit: handleSubmitTeam,
+    reset: resetTeam,
+  } = useForm();
+  const {
+    register: registerLeague,
+    handleSubmit: handleSubmitLeague,
+    reset: resetLeague,
+  } = useForm();
   const [deSelectedTeams, setDeselectedTeams] = React.useState<TeamType[]>([]);
   const [selectedTeams, setSelectedTeams] = React.useState<TeamType[]>([]);
+  const saveLeague = useMutation((newLeague: any) => {
+    return fetch("/api/league", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(newLeague),
+    });
+  });
   const mutation = useMutation((newTeam: TeamType) =>
     fetch("/api/team/", {
       method: "POST",
@@ -111,7 +130,7 @@ const NewLeague = () => {
             : null}
         </Columns>
         <Columns>
-          <h1>Selected Teams</h1>
+          <h1>Selected Teams: {selectedTeams.length}</h1>
           {selectedTeams.length > 0
             ? selectedTeams.map((t, index) => {
                 return (
@@ -129,8 +148,7 @@ const NewLeague = () => {
         </Columns>
       </TeamsContainer>
       <AddTeamForm
-        onSubmit={handleSubmit((d) => {
-          console.log(d);
+        onSubmit={handleSubmitTeam((d) => {
           const { name } = d;
           if (name === "") {
             return;
@@ -144,19 +162,40 @@ const NewLeague = () => {
             const a = [...selectedTeams, n];
             setSelectedTeams(a);
             mutation.mutate(n);
-            reset();
+            resetTeam();
           } else {
-            alert(`${name} excists`);
+            toast(`${name} already exists`);
           }
         })}
       >
         <AddTeam
-          {...register("name", { required: true })}
+          {...registerTeam("name", { required: true })}
           placeholder="New Team Name"
         />
 
         <AddTeamButton type="submit" value="Add team" />
       </AddTeamForm>
+      <AddTeamForm
+        onSubmit={handleSubmitLeague((d) => {
+          const { leagueName: name } = d;
+          if (selectedTeams.length < 8) {
+            toast("Please select 8 teams to compete");
+            return;
+          } else if (selectedTeams.length > 8) {
+            toast("Please only select 8 teams to compete");
+            return;
+          }
+
+          saveLeague.mutate({ name, teams: selectedTeams });
+        })}
+      >
+        <AddTeam
+          {...registerLeague("leagueName", { required: true })}
+          placeholder="League name"
+        />
+        <AddTeamButton type="submit" value="Create League" />
+      </AddTeamForm>
+      <Toaster />
     </Container>
   );
 };

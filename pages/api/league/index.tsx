@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import faunadb from "faunadb";
+import faunadb, { Create } from "faunadb";
 
 const secret = process.env.FAUNADB_SECRET || "";
 
@@ -8,9 +8,10 @@ const q = faunadb.query;
 const client = new faunadb.Client({ secret });
 
 const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { name: leaguename } = req.body;
+  console.log(req.body);
+  const { name: leaguename, teams } = req.body;
   if (leaguename) {
-    const data = await client.query<any>(
+    const league = await client.query<any>(
       q.Let(
         {
           newLeague: q.Create(q.Collection("leagues"), {
@@ -23,7 +24,45 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
       )
     );
-    return res.status(200).json({ data });
+    if (Array.isArray(teams) && teams.length > 0) {
+      const group = await client.query<any>(
+        q.Let(
+          {
+            newGroup: q.Create(q.Collection("groups"), {
+              data: {
+                leagueRef: q.Ref(q.Collection("leagues"), league.id),
+                teams: q.Map(
+                  teams.map((t) => t.id),
+                  q.Lambda("team", q.Ref(q.Collection("teams"), q.Var("team")))
+                ),
+              },
+            }),
+          },
+          {
+            group: q.Var("newGroup"),
+            groupStats: q.Map(
+              q.Select(["data", "teams"], q.Var("newGroup")),
+              q.Lambda(
+                "groupTeam",
+                q.Create(q.Collection("groupTeamStats"), {
+                  data: {
+                    groupRef: q.Select(["ref"], q.Var("newGroup")),
+                    teamRef: q.Var("groupTeam"),
+                    win: 0,
+                    loss: 0,
+                    roundsWon: 0,
+                    roundsLost: 0,
+                  },
+                })
+              )
+            ),
+          }
+        )
+      );
+      console.log(group);
+    }
+
+    return res.status(200).json({ data: league });
   } else {
     return res.status(400).json({ message: "Missing league name" });
   }
