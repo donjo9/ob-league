@@ -48,6 +48,7 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                   data: {
                     groupRef: q.Select(["ref"], q.Var("newGroup")),
                     teamRef: q.Var("groupTeam"),
+                    matches: 0,
                     win: 0,
                     loss: 0,
                     roundsWon: 0,
