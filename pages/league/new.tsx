@@ -35,7 +35,7 @@ const AddTeamButton = styled.input`
   ${tw`rounded border-2 bg-green-600 text-white my-2 p-2 border-green-700`}
 `;
 const AddTeamForm = styled.form`
-  ${tw`border-2 border-gray-800 rounded flex flex-col p-2 m-2 bg-gray-700`}
+  ${tw`flex flex-col p-2`}
 `;
 
 const NewLeague = () => {
@@ -92,10 +92,9 @@ const NewLeague = () => {
 
   return (
     <Container>
-      {isLoading ? "Loading..." : null}
       <TeamsContainer>
         <Columns>
-          <h1>Available Teams</h1>
+          <h1>{isLoading ? "Loading..." : "Available Teams"}</h1>
           {deSelectedTeams.length > 0
             ? deSelectedTeams.map((t, index) => {
                 return (
