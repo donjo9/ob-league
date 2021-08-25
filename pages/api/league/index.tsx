@@ -53,6 +53,7 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                     loss: 0,
                     roundsWon: 0,
                     roundsLost: 0,
+                    points: 0,
                   },
                 })
               )

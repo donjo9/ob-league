@@ -18,7 +18,7 @@ const Content = styled.main`
 `;
 
 const GroupTable = styled.table`
-  ${tw`bg-gray-700 p-2 w-3/5 table-auto  text-center`}
+  ${tw`bg-gray-700 p-2 w-1/5 table-auto  text-center`}
 `;
 
 const GroupHead = styled.thead`
@@ -27,10 +27,12 @@ const GroupHead = styled.thead`
 type TeamType = {
   name: string;
   id: string;
+  matches: number;
   win: number;
   loss: number;
   roundsWon: number;
   roundsLost: number;
+  points: number;
 };
 type groupType = {
   id: string;
@@ -54,22 +56,26 @@ export default function Home() {
         <GroupHead>
           <tr>
             <th>Team</th>
+            <th>Matches</th>
             <th>Wins</th>
             <th>Loss</th>
-            <th>Rounds Won</th>
-            <th>Rounds Lost</th>
-            <th>Round Difference</th>
+            <th>RW</th>
+            <th>RL</th>
+            <th>RD</th>
+            <th>Points</th>
           </tr>
         </GroupHead>
         <tbody>
           {p?.teams.map((t) => (
             <tr key={t.id}>
               <td>{t.name}</td>
+              <td>{t.matches}</td>
               <td>{t.win}</td>
               <td>{t.loss}</td>
               <td>{t.roundsWon}</td>
               <td>{t.roundsLost}</td>
               <td>{t.roundsWon - t.roundsLost}</td>
+              <td>{t.points}</td>
             </tr>
           ))}
         </tbody>

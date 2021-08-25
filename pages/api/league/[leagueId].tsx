@@ -49,6 +49,11 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                       {
                         name: q.Select(["data", "name"], q.Var("team")),
                         id: q.Select(["ref", "id"], q.Var("team")),
+                        matches: q.Select(
+                          ["data", "matches"],
+                          q.Var("tsRef"),
+                          0
+                        ),
                         win: q.Select(["data", "win"], q.Var("tsRef"), 0),
                         loss: q.Select(["data", "loss"], q.Var("tsRef"), 0),
                         roundsWon: q.Select(
@@ -61,6 +66,7 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                           q.Var("tsRef"),
                           0
                         ),
+                        points: q.Select(["data", "points"], q.Var("tsRef"), 0),
                       }
                     )
                   )
