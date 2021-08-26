@@ -51,7 +51,7 @@ export default function Home() {
 
   const groups = data?.groups.map((p: groupType, i: number) => (
     <React.Fragment key={p.id}>
-      <h1>Group {i + 1}</h1>
+      {data?.groups.lenght > 1 ? <h1>Group {i + 1}</h1> : null}
       <GroupTable>
         <GroupHead>
           <tr>
