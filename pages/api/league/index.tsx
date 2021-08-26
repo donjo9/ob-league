@@ -7,6 +7,32 @@ const secret = process.env.FAUNADB_SECRET || "";
 const q = faunadb.query;
 const client = new faunadb.Client({ secret });
 
+const getWeekMatches = (g1: Array<any>, g2: Array<any>) => {
+  const matchWeeks = [];
+  for (let i = 0; i < 7; i++) {
+    let result = [];
+    for (let i = 0; i < 4; i++) {
+      result.push({ team1: g1[i], team2: g2[i] });
+    }
+    matchWeeks.push({ matches: result, date: getMatchDate(36 + i, 2021) });
+    let first = g2.shift();
+    let last = g1.pop();
+    g1.unshift(first);
+    g2.push(last);
+  }
+  return matchWeeks;
+};
+
+function getMatchDate(w: number, y: number) {
+  var simple = new Date(y, 0, 1 + (w - 1) * 7);
+  var dow = simple.getDay();
+  var ISOweekStart = simple;
+  if (dow <= 4) ISOweekStart.setDate(simple.getDate() - simple.getDay() + 7);
+  else ISOweekStart.setDate(simple.getDate() + 14 - simple.getDay());
+  ISOweekStart.setHours(20);
+  return ISOweekStart.valueOf();
+}
+
 const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   console.log(req.body);
   const { name: leaguename, teams } = req.body;
@@ -25,6 +51,13 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       )
     );
     if (Array.isArray(teams) && teams.length > 0) {
+      const tempTeam = [...teams].map((t) => t.id);
+      const l = tempTeam.length / 2;
+      const t1 = tempTeam.splice(0, l);
+      const t2 = tempTeam.splice(0, l);
+      const matchWeeks = getWeekMatches(t1, t2);
+      console.log(JSON.stringify(matchWeeks));
+
       const group = await client.query<any>(
         q.Let(
           {
@@ -56,6 +89,37 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                     points: 0,
                   },
                 })
+              )
+            ),
+            matches: q.Map(
+              matchWeeks,
+              q.Lambda(
+                "mWeeks",
+                q.Map(
+                  q.Select(["matches"], q.Var("mWeeks")),
+                  q.Lambda(
+                    "match",
+                    q.Create(q.Collection("groupMatches"), {
+                      data: {
+                        groupRef: q.Select(["ref"], q.Var("newGroup")),
+                        team1: q.Ref(
+                          q.Collection("teams"),
+                          q.Select(["team1"], q.Var("match"))
+                        ),
+                        team2: q.Ref(
+                          q.Collection("teams"),
+                          q.Select(["team2"], q.Var("match"))
+                        ),
+                        maps: [
+                          { map: "", team1Score: 0, team2Score: 0 },
+                          { map: "", team1Score: 0, team2Score: 0 },
+                          { map: "", team1Score: 0, team2Score: 0 },
+                        ],
+                        matchDate: q.Select(["date"], q.Var("mWeeks")),
+                      },
+                    })
+                  )
+                )
               )
             ),
           }
