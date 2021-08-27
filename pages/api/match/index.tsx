@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import faunadb from "faunadb";
-import group from "../group";
 
 const secret = process.env.FAUNADB_SECRET || "";
 
