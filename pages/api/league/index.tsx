@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import faunadb, { Create } from "faunadb";
+import faunadb from "faunadb";
 
 const secret = process.env.FAUNADB_SECRET || "";
 
