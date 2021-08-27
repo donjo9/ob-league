@@ -80,8 +80,6 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         )
       )
     );
-    console.log(matches);
-
     return res.status(200).json(matches);
   }
   return res.status(200).json({});

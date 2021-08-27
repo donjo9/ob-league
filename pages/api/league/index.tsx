@@ -34,7 +34,6 @@ function getMatchDate(w: number, y: number) {
 }
 
 const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log(req.body);
   const { name: leaguename, teams } = req.body;
   if (leaguename) {
     const league = await client.query<any>(
@@ -56,7 +55,6 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       const t1 = tempTeam.splice(0, l);
       const t2 = tempTeam.splice(0, l);
       const matchWeeks = getWeekMatches(t1, t2);
-      console.log(JSON.stringify(matchWeeks));
 
       const group = await client.query<any>(
         q.Let(
@@ -125,7 +123,6 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
           }
         )
       );
-      console.log(group);
     }
 
     return res.status(200).json({ data: league });

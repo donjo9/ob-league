@@ -48,7 +48,6 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       )
     )
   );
-  console.log(data);
   res.status(200).json(data);
 };
 
