@@ -17,10 +17,11 @@ const getWeekMatches = (g1: Array<any>, g2: Array<any>) => {
       result.push({ team1: a1[i], team2: a2[i] });
     }
     matchWeeks.push({ matches: result, date: getMatchDate(36 + i, 2021) });
-    let last = a1.pop();
+    let one = a1[0];
     a1.shift();
+    let last = a1.pop();
     let first = a2.shift();
-    a1 = [1, first, ...a1];
+    a1 = [one, first, ...a1];
     a2 = [...a2, last];
   }
   return matchWeeks;
