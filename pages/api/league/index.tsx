@@ -8,17 +8,20 @@ const q = faunadb.query;
 const client = new faunadb.Client({ secret });
 
 const getWeekMatches = (g1: Array<any>, g2: Array<any>) => {
+  let a1 = [...g1];
+  let a2 = [...g2];
   const matchWeeks = [];
   for (let i = 0; i < 7; i++) {
     let result = [];
     for (let i = 0; i < 4; i++) {
-      result.push({ team1: g1[i], team2: g2[i] });
+      result.push({ team1: a1[i], team2: a2[i] });
     }
     matchWeeks.push({ matches: result, date: getMatchDate(36 + i, 2021) });
-    let first = g2.shift();
-    let last = g1.pop();
-    g1.unshift(first);
-    g2.push(last);
+    let last = a1.pop();
+    a1.shift();
+    let first = a2.shift();
+    a1 = [1, first, ...a1];
+    a2 = [...a2, last];
   }
   return matchWeeks;
 };
