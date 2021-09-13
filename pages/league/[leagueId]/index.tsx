@@ -125,7 +125,13 @@ export default function Home() {
           </tr>
         </GroupHead>
         <tbody>
-          {p?.teams.map((t) => (
+          {p?.teams
+            .sort(
+              (a, b) =>
+                b.points - a.points ||
+                b.roundsWon - b.roundsLost - (a.roundsWon - a.roundsLost)
+            )
+            .map((t) => (
             <tr key={t.id}>
               <td>{t.name}</td>
               <td>{t.matches}</td>
