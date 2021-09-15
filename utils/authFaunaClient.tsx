@@ -6,7 +6,7 @@ export default function authFaunaClient(
   res: NextApiResponse
 ) {
   const cookie = new Cookies(req, res);
-  let token = cookie.get("loginToken");
+  let token = cookie.get("loginToken") || "";
   return new faunadb.Client({
     secret: token,
   });
