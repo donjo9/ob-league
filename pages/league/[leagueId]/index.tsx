@@ -69,7 +69,7 @@ const MatchHeader = styled.div`
 `;
 
 const MatchContainer = styled.div`
-  ${tw`sm:flex md:justify-between w-full  p-1 border-b border-gray-700 cursor-pointer`}
+  ${tw`sm:flex md:justify-between w-full  p-1 border-b border-gray-700 cursor-pointer hover:border-blue-200 hover:border hover:bg-gray-700`}
 `;
 
 const MatchDetails = styled.div`
