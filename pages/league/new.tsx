@@ -4,6 +4,8 @@ import { useQuery, useMutation } from "react-query";
 import tw from "twin.macro";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
+import { useAuth } from "../../utils/useAuth";
+import { useRouter } from "next/router";
 
 const Container = styled.div`
   ${tw`flex flex-row bg-gray-700 items-start`}
@@ -61,6 +63,19 @@ const NewLeague = () => {
       body: JSON.stringify(newLeague),
     });
   });
+
+  const { user } = useAuth();
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (!user) {
+      return;
+    }
+    if (!user.email) {
+      router.replace("/");
+    }
+  }, [user]);
+
   const mutation = useMutation((newTeam: TeamType) =>
     fetch("/api/team/", {
       method: "POST",
