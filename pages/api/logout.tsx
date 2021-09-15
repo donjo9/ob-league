@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Cookies from "cookies";
 import faunadb from "faunadb";
-import { LoginData } from "../../types";
 
 const secret = process.env.FAUNADB_SECRET || "";
 
@@ -17,8 +16,8 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     cookie.set("loginToken", "", { httpOnly: true });
     return res.status(204).json({});
   } catch (error) {
-    console.warn(error.message);
-    return res.status(500).json({ error: error.message });
+    console.warn((error as Error).message);
+    return res.status(500).json({ error: (error as Error).message });
   }
 };
 
