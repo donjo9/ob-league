@@ -23,9 +23,15 @@ const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const user = await client.query<LoginData>(
       q.Let(
         {
-          login: q.Login(q.Match(q.Index("unique_User_email"), email), {
-            password: password,
-          }),
+          login: q.Login(
+            q.Match(
+              q.Index("unique_User_email"),
+              (email as string).toLowerCase()
+            ),
+            {
+              password: password,
+            }
+          ),
         },
         {
           id: q.Select(["ref", "id"], q.Var("login")),
