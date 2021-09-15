@@ -1,7 +1,7 @@
 import * as React from "react";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { useLeague } from "../../../hooks/UseLeague";
@@ -69,7 +69,7 @@ const MatchHeader = styled.div`
 `;
 
 const MatchContainer = styled.div`
-  ${tw`sm:flex md:justify-between w-full  p-1 border-b border-gray-700`}
+  ${tw`sm:flex md:justify-between w-full  p-1 border-b border-gray-700 cursor-pointer`}
 `;
 
 const MatchDetails = styled.div`
@@ -132,17 +132,17 @@ export default function Home() {
                 b.roundsWon - b.roundsLost - (a.roundsWon - a.roundsLost)
             )
             .map((t) => (
-            <tr key={t.id}>
-              <td>{t.name}</td>
-              <td>{t.matches}</td>
-              <td>{t.win}</td>
-              <td>{t.loss}</td>
-              <td>{t.roundsWon}</td>
-              <td>{t.roundsLost}</td>
-              <td>{t.roundsWon - t.roundsLost}</td>
-              <td>{t.points}</td>
-            </tr>
-          ))}
+              <tr key={t.id}>
+                <td>{t.name}</td>
+                <td>{t.matches}</td>
+                <td>{t.win}</td>
+                <td>{t.loss}</td>
+                <td>{t.roundsWon}</td>
+                <td>{t.roundsLost}</td>
+                <td>{t.roundsWon - t.roundsLost}</td>
+                <td>{t.points}</td>
+              </tr>
+            ))}
         </tbody>
       </GroupTable>
     </React.Fragment>
@@ -171,14 +171,17 @@ export default function Home() {
               return (
                 <React.Fragment key={match.id}>
                   {header}
-                  <MatchContainer key={match.id}>
-                    <MatchDetails>
-                      {match.team1.name} vs {match.team2.name}
-                    </MatchDetails>
-                    <MatchDate>
-                      {date.toLocaleDateString()} - {date.toLocaleTimeString()}
-                    </MatchDate>
-                  </MatchContainer>
+                  <Link href={`/match/${match.id}`}>
+                    <MatchContainer>
+                      <MatchDetails>
+                        {match.team1.name} vs {match.team2.name}
+                      </MatchDetails>
+                      <MatchDate>
+                        {date.toLocaleDateString()} -{" "}
+                        {date.toLocaleTimeString()}
+                      </MatchDate>
+                    </MatchContainer>
+                  </Link>
                 </React.Fragment>
               );
             })
