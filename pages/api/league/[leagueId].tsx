@@ -7,7 +7,9 @@ const secret = process.env.FAUNADB_SECRET || "";
 const q = faunadb.query;
 const client = new faunadb.Client({ secret });
 
-const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {};
+const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+  return res.status(405).json({});
+};
 
 const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { leagueId } = req.query;
@@ -86,19 +88,14 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 const putHandler = async (req: NextApiRequest, res: NextApiResponse) => {};
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  try {
-    switch (req.method) {
-      case "POST":
-        return postHandler(req, res);
-      case "GET":
-        return getHandler(req, res);
-      case "PUT":
-        return putHandler(req, res);
-      default:
-        break;
-    }
-  } catch (error) {
-    console.warn(error.message);
-    res.status(500).json(error.message);
+  switch (req.method) {
+    case "POST":
+      return postHandler(req, res);
+    case "GET":
+      return getHandler(req, res);
+    case "PUT":
+      return putHandler(req, res);
+    default:
+      break;
   }
 };
