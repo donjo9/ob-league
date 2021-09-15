@@ -9,10 +9,13 @@
     "ts-node": "ts-node --compiler-options '{\"module\":\"CommonJS\"}'"
   },
   "dependencies": {
+    "@types/react-datepicker": "^4.1.6",
     "babel-plugin-macros": "^3.1.0",
+    "cookies": "^0.8.0",
     "faunadb": "^4.3.0",
     "next": "^11.1.0",
     "react": "^17.0.2",
+    "react-datepicker": "^4.2.1",
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.13.0",
     "react-hot-toast": "^2.1.1",
