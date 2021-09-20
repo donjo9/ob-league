@@ -10,7 +10,15 @@ import { useAuth } from "../../../utils/useAuth";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const maps = ["Nuke", "Inferno", "Overpass", "Mirage", "Vertigo", "Ancient"];
+const maps = [
+  "Nuke",
+  "Inferno",
+  "Overpass",
+  "Mirage",
+  "Vertigo",
+  "Ancient",
+  "Dust2",
+];
 
 const MatchForm = styled.form`
   ${tw`grid grid-cols-8  gap-1 w-1/4`}
