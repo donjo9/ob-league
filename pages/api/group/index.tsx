@@ -1,11 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import faunadb, { Collection } from "faunadb";
-
-const secret = process.env.FAUNADB_SECRET || "";
-
-const q = faunadb.query;
-const client = new faunadb.Client({ secret });
+import { client, q } from "../../../utils/faunadb";
 
 const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { lid: leagueId } = req.body;

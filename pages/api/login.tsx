@@ -1,12 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Cookies from "cookies";
-import faunadb from "faunadb";
 import { LoginData } from "../../types";
-
-const secret = process.env.FAUNADB_SECRET || "";
-
-const q = faunadb.query;
-const client = new faunadb.Client({ secret });
+import { client, q } from "../../utils/faunadb";
 
 const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

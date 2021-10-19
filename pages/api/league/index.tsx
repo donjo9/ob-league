@@ -1,11 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import faunadb from "faunadb";
-
-const secret = process.env.FAUNADB_SECRET || "";
-
-const q = faunadb.query;
-const client = new faunadb.Client({ secret });
+import { client, q } from "../../../utils/faunadb";
 
 const getWeekMatches = (g1: Array<any>, g2: Array<any>) => {
   let a1 = [...g1];

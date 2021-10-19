@@ -1,10 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import faunadb from "faunadb";
-import authFaunaClient from "../../../utils/authFaunaClient";
-const secret = process.env.FAUNADB_SECRET || "";
 
-const q = faunadb.query;
-const client = new faunadb.Client({ secret });
+import { authFaunaClient, client, q } from "../../../utils/faunadb";
 
 type FaunaDBRef = {
   id: string;
@@ -207,6 +203,7 @@ const putHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       q.Update(q.Ref(q.Collection("groupMatches"), matchid), { data })
     )
   );
+
   return res.status(200).json(match);
 };
 

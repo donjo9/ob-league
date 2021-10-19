@@ -1,11 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import faunadb, { Collection, Ref } from "faunadb";
-
-const secret = process.env.FAUNADB_SECRET || "";
-
-const q = faunadb.query;
-const client = new faunadb.Client({ secret });
+import { client, q } from "../../../utils/faunadb";
 
 const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(405).json({});
@@ -16,7 +11,7 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const data = await client.query<any>(
     q.Let(
       {
-        league: Ref(Collection("leagues"), leagueId),
+        league: q.Ref(q.Collection("leagues"), leagueId),
         groups: q.Map(
           q.Paginate(q.Match(q.Index("allGroupsByLeague"), q.Var("league"))),
           q.Lambda("groupRef", q.Get(q.Var("groupRef")))
@@ -80,7 +75,7 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     )
   );
-  console.log(data.groups);
+  console.log("league: ", leagueId, data);
 
   return res.status(200).json(data);
 };
