@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { authFaunaClient, client, q } from "../../../utils/faunadb";
+import { authFaunaClient, client, q } from "../../../../utils/faunadb";
 
 type FaunaDBRef = {
   id: string;

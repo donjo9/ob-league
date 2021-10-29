@@ -5,10 +5,10 @@ import toast, { Toaster } from "react-hot-toast";
 import { useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { matchInfoType } from "../../../types";
-import { useAuth } from "../../../utils/useAuth";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { matchInfoType } from "../../../../types";
+import { useAuth } from "../../../../utils/useAuth";
 
 const maps = [
   "Nuke",
@@ -21,7 +21,7 @@ const maps = [
 ];
 
 const MatchForm = styled.form`
-  ${tw`grid grid-cols-8  gap-1 w-1/4`}
+  ${tw`grid grid-cols-8  gap-1 max-w-2xl`}
 `;
 const NumberInput = styled.input`
   ${tw`bg-gray-600 text-gray-900 w-14 text-center`}
@@ -73,7 +73,7 @@ const EditMatch = () => {
 
       const [_key, matchid] = queryKey;
 
-      const f = await fetch(`/api/match/${matchid}`);
+      const f = await fetch(`/api/match/playoff/${matchid}`);
       if (!f.ok) {
         throw new Error("Network response was not ok");
       }
@@ -119,7 +119,7 @@ const EditMatch = () => {
       matchDate: (formData.dateInput as Date).valueOf(),
     };
 
-    await fetch(`/api/match/${matchid}`, {
+    await fetch(`/api/match/playoff/${matchid}`, {
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ data }),
@@ -128,7 +128,7 @@ const EditMatch = () => {
   };
 
   const endGame = async () => {
-    await fetch(`/api/match/${matchid}`, {
+    await fetch(`/api/match/playoff/${matchid}`, {
       method: "POST",
     });
     queryClient.invalidateQueries("match");

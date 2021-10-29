@@ -2,8 +2,8 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import { useQuery } from "react-query";
 import Link from "next/link";
-import { matchInfoType } from "../../../types";
-import { useAuth } from "../../../utils/useAuth";
+import { matchInfoType } from "../../../../types";
+import { useAuth } from "../../../../utils/useAuth";
 import styled from "styled-components";
 import tw from "twin.macro";
 
@@ -12,7 +12,7 @@ const EditButton = styled.a`
 `;
 
 const MatchHeader = styled.div`
-  ${tw`m-2 w-1/4 grid grid-cols-3 border-2 bg-gray-700 border-gray-900 `}
+  ${tw`m-2 max-w-xl grid grid-cols-3 border-2 bg-gray-700 border-gray-900 `}
 `;
 
 const MatchHeaderTime = styled.div`
@@ -20,7 +20,7 @@ const MatchHeaderTime = styled.div`
 `;
 
 const MatchMapContainer = styled.div`
-  ${tw`grid grid-cols-4 w-1/4 bg-gray-900 m-2`}
+  ${tw`grid grid-cols-4 max-w-xl bg-gray-900 m-2`}
 `;
 
 const Team1Item = styled.div`
@@ -76,7 +76,7 @@ const matchInfo = () => {
 
       const [_key, matchid] = queryKey;
 
-      const f = await fetch(`/api/match/${matchid}`);
+      const f = await fetch(`/api/match/group/${matchid}`);
       if (!f.ok) {
         throw new Error("Network response was not ok");
       }
@@ -120,7 +120,7 @@ const matchInfo = () => {
           );
         })}
         {user.email && matchData.matchDone == false && (
-          <Link href={`/match/${matchid}/edit`}>
+          <Link href={`/match/group/${matchid}/edit`}>
             <EditButton>Edit</EditButton>
           </Link>
         )}

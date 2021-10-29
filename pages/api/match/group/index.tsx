@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { client, q } from "../../../utils/faunadb";
+import { client, q } from "../../../../utils/faunadb";
 
 const postHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(405).json({});
@@ -65,6 +65,11 @@ const getHandler = async (req: NextApiRequest, res: NextApiResponse) => {
                       ),
                       maps: q.Select(["data", "maps"], q.Var("match")),
                       date: q.Select(["data", "matchDate"], q.Var("match")),
+                      matchDone: q.Select(
+                        ["data", "matchDone"],
+                        q.Var("match"),
+                        false
+                      ),
                     }
                   )
                 )

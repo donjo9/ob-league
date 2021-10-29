@@ -6,6 +6,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { useLeague } from "../../../hooks/UseLeague";
 import { useQuery } from "react-query";
+import Playoff from "../../../components/playoff";
 
 const Container = styled.div`
   ${tw`bg-gray-800 text-blue-100 md:flex justify-center`}
@@ -15,7 +16,7 @@ const Container = styled.div`
 `;
 
 const Content = styled.main`
-  ${tw`m-2 p-2 md:w-3/4 lg:w-1/2 xl:w-1/3`}
+  ${tw`m-2 p-2 md:w-3/4 lg:w-2/3 xl:w-1/2`}
 `;
 
 const GroupTable = styled.table`
@@ -62,6 +63,7 @@ type matchInfo = {
   team2: matchTeamInfo;
   maps: Array<matchMapInfo>;
   date: number;
+  matchDone: boolean;
 };
 
 const MatchHeader = styled.div`
@@ -69,7 +71,7 @@ const MatchHeader = styled.div`
 `;
 
 const MatchContainer = styled.div`
-  ${tw`sm:flex md:justify-between w-full  p-1 border-b border-gray-700 cursor-pointer hover:border-blue-200 hover:border hover:bg-gray-700`}
+  ${tw`sm:flex md:justify-between w-full  p-1 border-b border-gray-700 cursor-pointer hover:border-blue-200 hover:bg-gray-700`}
 `;
 
 const MatchDetails = styled.div`
@@ -95,7 +97,7 @@ export default function Home() {
 
       const [_key, leagueId] = queryKey;
 
-      const f = await fetch(`/api/match?leagueId=${leagueId}`);
+      const f = await fetch(`/api/match/group/?leagueId=${leagueId}`);
       if (!f.ok) {
         throw new Error("Network response was not ok");
       }
@@ -156,6 +158,7 @@ export default function Home() {
       <Content>
         {isLoading && <span>Loading...</span>}
         {groups}
+        <Playoff leagueId={leagueId} />
         {t &&
           t.map((g) =>
             g.map((match, index) => {
@@ -168,17 +171,34 @@ export default function Home() {
                 );
               }
               const date = new Date(match.date);
+              let score = "";
+              if (match.matchDone) {
+                let t1Score = 0;
+                let t2Score = 0;
+                for (let i = 0; i < match.maps.length; i++) {
+                  if (match.maps[i].team1Score > match.maps[i].team2Score) {
+                    t1Score++;
+                  } else if (
+                    match.maps[i].team2Score > match.maps[i].team1Score
+                  ) {
+                    t2Score++;
+                  }
+                }
+                score = `${t1Score} - ${t2Score}`;
+              }
+
               return (
                 <React.Fragment key={match.id}>
                   {header}
-                  <Link href={`/match/${match.id}`}>
+                  <Link href={`/match/group/${match.id}`}>
                     <MatchContainer>
                       <MatchDetails>
                         {match.team1.name} vs {match.team2.name}
                       </MatchDetails>
                       <MatchDate>
-                        {date.toLocaleDateString()} -{" "}
-                        {date.toLocaleTimeString()}
+                        {match.matchDone
+                          ? score
+                          : `${date.toLocaleDateString()}  - ${date.toLocaleTimeString()}`}
                       </MatchDate>
                     </MatchContainer>
                   </Link>
